@@ -1,0 +1,1194 @@
+import React, { useMemo, useState } from "react";
+
+const vocabRaw = `私|わたし|eu|Básico
+僕|ぼく|eu|Básico
+俺|おれ|eu|Básico
+自分|じぶん|eu / si mesmo|Básico
+あなた|あなた|você|Básico
+君|きみ|você|Básico
+みんな|みんな|todo mundo|Básico
+皆|みな|todos|Básico
+誰|だれ|quem|Básico
+何|なに|o que|Básico
+何か|なにか|algo|Básico
+何も|なにも|nada|Básico
+どこ|どこ|onde|Básico
+ここ|ここ|aqui|Básico
+そこ|そこ|aí|Básico
+あそこ|あそこ|ali|Básico
+こちら|こちら|aqui / este lado|Básico
+そちら|そちら|aí / esse lado|Básico
+あちら|あちら|ali / aquele lado|Básico
+これ|これ|isto|Básico
+それ|それ|isso|Básico
+あれ|あれ|aquilo|Básico
+この|この|este|Básico
+その|その|esse|Básico
+あの|あの|aquele|Básico
+どれ|どれ|qual|Básico
+どの|どの|qual|Básico
+いつ|いつ|quando|Básico
+今|いま|agora|Básico
+今日|きょう|hoje|Básico
+昨日|きのう|ontem|Básico
+明日|あした|amanhã|Básico
+もう|もう|já|Básico
+まだ|まだ|ainda|Básico
+また|また|de novo|Básico
+さっき|さっき|agora há pouco|Básico
+あとで|あとで|depois|Básico
+先に|さきに|antes|Básico
+後で|あとで|mais tarde|Básico
+一緒|いっしょ|junto|Básico
+一人|ひとり|sozinho / uma pessoa|Básico
+二人|ふたり|duas pessoas|Básico
+本当|ほんとう|verdade|Básico
+嘘|うそ|mentira|Básico
+理由|りゆう|motivo|Básico
+たぶん|たぶん|talvez|Básico
+もちろん|もちろん|claro|Básico
+やっぱり|やっぱり|como eu pensei|Básico
+特に|とくに|principalmente|Básico
+例えば|たとえば|por exemplo|Básico
+でも|でも|mas|Básico
+けど|けど|mas|Básico
+だから|だから|por isso|Básico
+そして|そして|e então|Básico
+じゃあ|じゃあ|então|Básico
+なら|なら|então / nesse caso|Básico
+もし|もし|se|Básico
+ちょっと|ちょっと|um pouco|Básico
+ちゃんと|ちゃんと|direito / corretamente|Básico
+本当に|ほんとうに|realmente|Básico
+ある|ある|haver / existir (coisa)|Verbo
+いる|いる|haver / existir (ser vivo)|Verbo
+する|する|fazer|Verbo
+やる|やる|fazer|Verbo
+なる|なる|virar / tornar-se|Verbo
+できる|できる|conseguir / ser possível|Verbo
+行く|いく|ir|Verbo
+来る|くる|vir|Verbo
+帰る|かえる|voltar para casa|Verbo
+出る|でる|sair|Verbo
+入る|はいる|entrar|Verbo
+着く|つく|chegar|Verbo
+歩く|あるく|andar|Verbo
+走る|はしる|correr|Verbo
+止まる|とまる|parar|Verbo
+座る|すわる|sentar|Verbo
+立つ|たつ|ficar em pé|Verbo
+起きる|おきる|acordar / levantar|Verbo
+寝る|ねる|dormir|Verbo
+休む|やすむ|descansar / faltar|Verbo
+食べる|たべる|comer|Verbo
+飲む|のむ|beber|Verbo
+吸う|すう|chupar / fumar / inalar|Verbo
+噛む|かむ|mastigar|Verbo
+作る|つくる|fazer / criar|Verbo
+使う|つかう|usar|Verbo
+買う|かう|comprar|Verbo
+売る|うる|vender|Verbo
+持つ|もつ|segurar / ter|Verbo
+取る|とる|pegar|Verbo
+置く|おく|colocar|Verbo
+入れる|いれる|colocar dentro|Verbo
+出す|だす|tirar / pôr para fora|Verbo
+開ける|あける|abrir|Verbo
+閉める|しめる|fechar|Verbo
+始める|はじめる|começar|Verbo
+終わる|おわる|terminar|Verbo
+続ける|つづける|continuar|Verbo
+待つ|まつ|esperar|Verbo
+急ぐ|いそぐ|se apressar|Verbo
+間に合う|まにあう|dar tempo / chegar a tempo|Verbo
+遅れる|おくれる|atrasar-se|Verbo
+呼ぶ|よぶ|chamar|Verbo
+送る|おくる|enviar / acompanhar|Verbo
+迎える|むかえる|ir buscar / receber|Verbo
+会う|あう|encontrar|Verbo
+話す|はなす|falar|Verbo
+言う|いう|dizer|Verbo
+聞く|きく|ouvir / perguntar|Verbo
+見せる|みせる|mostrar|Verbo
+見る|みる|ver|Verbo
+観る|みる|assistir|Verbo
+読む|よむ|ler|Verbo
+書く|かく|escrever|Verbo
+覚える|おぼえる|memorizar|Verbo
+忘れる|わすれる|esquecer|Verbo
+思う|おもう|achar / pensar|Verbo
+考える|かんがえる|pensar / refletir|Verbo
+知る|しる|saber / conhecer|Verbo
+分かる|わかる|entender|Verbo
+教える|おしえる|ensinar|Verbo
+習う|ならう|aprender com alguém|Verbo
+勉強する|べんきょうする|estudar|Verbo
+働く|はたらく|trabalhar|Verbo
+休憩する|きゅうけいする|fazer pausa|Verbo
+手伝う|てつだう|ajudar|Verbo
+助ける|たすける|socorrer / ajudar|Verbo
+頼む|たのむ|pedir|Verbo
+借りる|かりる|pegar emprestado|Verbo
+貸す|かす|emprestar|Verbo
+返す|かえす|devolver|Verbo
+払う|はらう|pagar|Verbo
+選ぶ|えらぶ|escolher|Verbo
+決める|きめる|decidir|Verbo
+比べる|くらべる|comparar|Verbo
+変える|かえる|mudar / trocar|Verbo
+変わる|かわる|mudar|Verbo
+直す|なおす|consertar / corrigir|Verbo
+治る|なおる|curar / melhorar|Verbo
+洗う|あらう|lavar|Verbo
+片付ける|かたづける|arrumar|Verbo
+掃除する|そうじする|limpar|Verbo
+料理する|りょうりする|cozinhar|Verbo
+切る|きる|cortar|Verbo
+焼く|やく|assar / grelhar|Verbo
+温める|あたためる|esquentar|Verbo
+冷やす|ひやす|gelar|Verbo
+着る|きる|vestir (parte de cima)|Verbo
+履く|はく|vestir (parte de baixo / calçar)|Verbo
+脱ぐ|ぬぐ|tirar a roupa|Verbo
+持って行く|もっていく|levar|Verbo
+持って来る|もってくる|trazer|Verbo
+乗る|のる|embarcar / subir|Verbo
+降りる|おりる|descer|Verbo
+渡る|わたる|atravessar|Verbo
+曲がる|まがる|virar|Verbo
+押す|おす|empurrar / apertar|Verbo
+引く|ひく|puxar|Verbo
+触る|さわる|tocar|Verbo
+撮る|とる|tirar foto / filmar|Verbo
+いい|いい|bom|Adjetivo
+悪い|わるい|ruim|Adjetivo
+大きい|おおきい|grande|Adjetivo
+小さい|ちいさい|pequeno|Adjetivo
+多い|おおい|muito / muitos|Adjetivo
+少ない|すくない|pouco / poucos|Adjetivo
+高い|たかい|alto / caro|Adjetivo
+安い|やすい|barato|Adjetivo
+新しい|あたらしい|novo|Adjetivo
+古い|ふるい|velho / antigo|Adjetivo
+早い|はやい|cedo / rápido|Adjetivo
+遅い|おそい|tarde / lento|Adjetivo
+速い|はやい|rápido|Adjetivo
+近い|ちかい|perto|Adjetivo
+遠い|とおい|longe|Adjetivo
+長い|ながい|longo|Adjetivo
+短い|みじかい|curto|Adjetivo
+広い|ひろい|amplo|Adjetivo
+狭い|せまい|apertado / estreito|Adjetivo
+重い|おもい|pesado|Adjetivo
+軽い|かるい|leve|Adjetivo
+暑い|あつい|quente (clima)|Adjetivo
+寒い|さむい|frio (clima)|Adjetivo
+熱い|あつい|quente (objeto / febre)|Adjetivo
+冷たい|つめたい|gelado / frio ao toque|Adjetivo
+温かい|あたたかい|morno / caloroso|Adjetivo
+難しい|むずかしい|difícil|Adjetivo
+優しい|やさしい|gentil|Adjetivo
+厳しい|きびしい|rigoroso / duro|Adjetivo
+嬉しい|うれしい|feliz|Adjetivo
+楽しい|たのしい|divertido|Adjetivo
+悲しい|かなしい|triste|Adjetivo
+寂しい|さびしい|solitário|Adjetivo
+怖い|こわい|assustador|Adjetivo
+痛い|いたい|dolorido|Adjetivo
+眠い|ねむい|com sono|Adjetivo
+だるい|だるい|mole / sem energia|Adjetivo
+忙しい|いそがしい|ocupado|Adjetivo
+欲しい|ほしい|querer|Adjetivo
+うまい|うまい|gostoso / habilidoso|Adjetivo
+おいしい|おいしい|gostoso|Adjetivo
+まずい|まずい|ruim de gosto|Adjetivo
+甘い|あまい|doce|Adjetivo
+辛い|からい|apimentado|Adjetivo
+しょっぱい|しょっぱい|salgado|Adjetivo
+濃い|こい|forte / concentrado|Adjetivo
+薄い|うすい|fraco / fino|Adjetivo
+明るい|あかるい|claro / alegre|Adjetivo
+暗い|くらい|escuro|Adjetivo
+かわいい|かわいい|fofo|Adjetivo
+かっこいい|かっこいい|legal / estiloso|Adjetivo/Adv
+面白い|おもしろい|interessante / engraçado|Adjetivo/Adv
+つまらない|つまらない|sem graça|Adjetivo/Adv
+危ない|あぶない|perigoso|Adjetivo/Adv
+汚い|きたない|sujo|Adjetivo/Adv
+きれい|きれい|bonito / limpo|Adjetivo/Adv
+静か|しずか|silencioso|Adjetivo/Adv
+にぎやか|にぎやか|animado|Adjetivo/Adv
+有名|ゆうめい|famoso|Adjetivo/Adv
+大事|だいじ|importante|Adjetivo/Adv
+大丈夫|だいじょうぶ|tudo bem|Adjetivo/Adv
+必要|ひつよう|necessário|Adjetivo/Adv
+無理|むり|impossível / forçado|Adjetivo/Adv
+簡単|かんたん|simples|Adjetivo/Adv
+便利|べんり|prático|Adjetivo/Adv
+不便|ふべん|inconveniente|Adjetivo/Adv
+変|へん|estranho|Adjetivo/Adv
+同じ|おなじ|igual|Adjetivo/Adv
+自由|じゆう|livre|Adjetivo/Adv
+暇|ひま|livre / sem nada para fazer|Adjetivo/Adv
+元気|げんき|bem / animado|Adjetivo/Adv
+平気|へいき|de boa / tranquilo|Adjetivo/Adv
+真面目|まじめ|sério|Adjetivo/Adv
+下手|へた|ruim em algo|Adjetivo/Adv
+上手|じょうず|bom em algo|Adjetivo/Adv
+好き|すき|gostar|Adjetivo/Adv
+嫌い|きらい|não gostar|Adjetivo/Adv
+上|うえ|em cima|Adjetivo/Adv
+下|した|embaixo|Adjetivo/Adv
+前|まえ|frente / antes|Adjetivo/Adv
+後ろ|うしろ|atrás|Adjetivo/Adv
+横|よこ|lado|Adjetivo/Adv
+中|なか|dentro|Adjetivo/Adv
+外|そと|fora|Adjetivo/Adv
+左|ひだり|esquerda|Adjetivo/Adv
+右|みぎ|direita|Adjetivo/Adv
+すぐ|すぐ|logo|Adjetivo/Adv
+ゆっくり|ゆっくり|devagar|Adjetivo/Adv
+もっと|もっと|mais|Adjetivo/Adv
+一番|いちばん|o mais|Adjetivo/Adv
+全然|ぜんぜん|nada / totalmente|Adjetivo/Adv
+かなり|かなり|bastante|Adjetivo/Adv
+結構|けっこう|bem / bastante|Adjetivo/Adv
+めっちゃ|めっちゃ|muito|Adjetivo/Adv
+どう|どう|como|Básico
+ちゃんとした|ちゃんとした|decente / apropriado|Adjetivo/Adv
+普通|ふつう|normal|Adjetivo/Adv
+急に|きゅうに|de repente|Adjetivo/Adv
+特別|とくべつ|especial|Adjetivo/Adv
+最高|さいこう|o melhor|Adjetivo/Adv
+人|ひと|pessoa|Pessoas
+男|おとこ|homem|Pessoas
+女|おんな|mulher|Pessoas
+子供|こども|criança|Pessoas
+大人|おとな|adulto|Pessoas
+友達|ともだち|amigo|Pessoas
+親|おや|pais|Pessoas
+母|はは|mãe|Pessoas
+お母さん|おかあさん|mãe|Pessoas
+父|ちち|pai|Pessoas
+お父さん|おとうさん|pai|Pessoas
+兄|あに|irmão mais velho|Pessoas
+お兄さん|おにいさん|irmão mais velho|Pessoas
+弟|おとうと|irmão mais novo|Pessoas
+姉|あね|irmã mais velha|Pessoas
+お姉さん|おねえさん|irmã mais velha|Pessoas
+妹|いもうと|irmã mais nova|Pessoas
+家族|かぞく|família|Pessoas
+夫|おっと|marido|Pessoas
+妻|つま|esposa|Pessoas
+旦那|だんな|marido|Pessoas
+奥さん|おくさん|esposa|Pessoas
+彼氏|かれし|namorado|Pessoas
+彼女|かのじょ|namorada|Pessoas
+赤ちゃん|あかちゃん|bebê|Pessoas
+先生|せんせい|professor|Pessoas
+学生|がくせい|estudante|Pessoas
+先輩|せんぱい|veterano|Pessoas
+後輩|こうはい|calouro / júnior|Pessoas
+上司|じょうし|chefe|Pessoas
+部下|ぶか|subordinado|Pessoas
+同僚|どうりょう|colega de trabalho|Pessoas
+相手|あいて|outra pessoa / oponente|Pessoas
+客|きゃく|cliente / visitante|Pessoas
+店員|てんいん|atendente|Pessoas
+医者|いしゃ|médico|Pessoas
+看護師|かんごし|enfermeiro|Pessoas
+警察|けいさつ|polícia|Pessoas
+店長|てんちょう|gerente da loja|Pessoas
+社長|しゃちょう|presidente da empresa|Pessoas
+自分たち|じぶんたち|nós|Pessoas
+なぜ|なぜ|por quê|Básico
+世代|せだい|geração|Pessoas
+恋人|こいびと|parceiro romântico|Pessoas
+知り合い|しりあい|conhecido|Pessoas
+仲間|なかま|companheiro|Pessoas
+相棒|あいぼう|parceiro|Pessoas
+恋愛|れんあい|romance|Pessoas
+関係|かんけい|relação|Pessoas
+性格|せいかく|personalidade|Pessoas
+年|とし|ano / idade|Tempo
+月|つき|mês / lua|Tempo
+日|ひ|dia / sol|Tempo
+時間|じかん|tempo / hora|Tempo
+分|ふん|minuto|Tempo
+秒|びょう|segundo|Tempo
+朝|あさ|manhã|Tempo
+昼|ひる|meio-dia / tarde|Tempo
+夜|よる|noite|Tempo
+夕方|ゆうがた|fim da tarde|Tempo
+今朝|けさ|esta manhã|Tempo
+今夜|こんや|esta noite|Tempo
+今週|こんしゅう|esta semana|Tempo
+先週|せんしゅう|semana passada|Tempo
+来週|らいしゅう|semana que vem|Tempo
+今月|こんげつ|este mês|Tempo
+先月|せんげつ|mês passado|Tempo
+来月|らいげつ|mês que vem|Tempo
+今年|ことし|este ano|Tempo
+去年|きょねん|ano passado|Tempo
+来年|らいねん|ano que vem|Tempo
+毎日|まいにち|todo dia|Tempo
+毎週|まいしゅう|toda semana|Tempo
+毎月|まいつき|todo mês|Tempo
+毎年|まいとし|todo ano|Tempo
+平日|へいじつ|dia útil|Tempo
+週末|しゅうまつ|fim de semana|Tempo
+土曜|どよう|sábado|Tempo
+日曜|にちよう|domingo|Tempo
+月曜|げつよう|segunda|Tempo
+火曜|かよう|terça|Tempo
+水曜|すいよう|quarta|Tempo
+木曜|もくよう|quinta|Tempo
+金曜|きんよう|sexta|Tempo
+午前|ごぜん|manhã / a.m.|Tempo
+午後|ごご|tarde / p.m.|Tempo
+予定|よてい|plano / agenda|Tempo
+約束|やくそく|compromisso / promessa|Tempo
+締切|しめきり|prazo final|Tempo
+最近|さいきん|recentemente|Tempo
+昔|むかし|antigamente|Tempo
+最初|さいしょ|começo|Tempo
+最後|さいご|fim / último|Tempo
+途中|とちゅう|no meio do caminho|Tempo
+瞬間|しゅんかん|instante|Tempo
+場合|ばあい|caso / situação|Tempo
+時|とき|quando / hora|Tempo
+たまに|たまに|às vezes|Tempo
+いつも|いつも|sempre|Tempo
+よく|よく|frequentemente / bem|Tempo
+家|いえ|casa|Casa
+部屋|へや|quarto / cômodo|Casa
+玄関|げんかん|entrada da casa|Casa
+ドア|どあ|porta|Casa
+窓|まど|janela|Casa
+鍵|かぎ|chave|Casa
+机|つくえ|mesa|Casa
+椅子|いす|cadeira|Casa
+棚|たな|prateleira|Casa
+床|ゆか|chão|Casa
+壁|かべ|parede|Casa
+天井|てんじょう|teto|Casa
+電気|でんき|eletricidade / luz|Casa
+電灯|でんとう|lâmpada|Casa
+冷蔵庫|れいぞうこ|geladeira|Casa
+電子レンジ|でんしれんじ|micro-ondas|Casa
+洗濯機|せんたくき|máquina de lavar|Casa
+掃除機|そうじき|aspirador|Casa
+エアコン|えあこん|ar-condicionado|Casa
+扇風機|せんぷうき|ventilador|Casa
+暖房|だんぼう|aquecimento|Casa
+風呂|ふろ|banho / banheira|Casa
+お風呂|おふろ|banho / banheiro|Casa
+シャワー|しゃわー|chuveiro|Casa
+トイレ|といれ|banheiro|Casa
+洗面所|せんめんじょ|pia / lavabo|Casa
+鏡|かがみ|espelho|Casa
+タオル|たおる|toalha|Casa
+石鹸|せっけん|sabão|Casa
+歯ブラシ|はぶらし|escova de dentes|Casa
+布団|ふとん|futon|Casa
+ベッド|べっど|cama|Casa
+枕|まくら|travesseiro|Casa
+毛布|もうふ|cobertor|Casa
+布|ぬの|pano / tecido|Casa
+服|ふく|roupa|Casa
+靴|くつ|sapato|Casa
+靴下|くつした|meia|Casa
+鞄|かばん|bolsa / mochila|Casa
+財布|さいふ|carteira|Casa
+傘|かさ|guarda-chuva|Casa
+時計|とけい|relógio|Casa
+眼鏡|めがね|óculos|Casa
+携帯|けいたい|celular|Casa
+充電器|じゅうでんき|carregador|Casa
+コンセント|こんせんと|tomada|Casa
+電池|でんち|pilha / bateria|Casa
+ごみ|ごみ|lixo|Casa
+袋|ふくろ|sacola / saco|Casa
+箱|はこ|caixa|Casa
+店|みせ|loja|Lugares
+会社|かいしゃ|empresa|Lugares
+学校|がっこう|escola|Lugares
+教室|きょうしつ|sala de aula|Lugares
+職場|しょくば|local de trabalho|Lugares
+駅|えき|estação|Lugares
+電車|でんしゃ|trem|Lugares
+地下鉄|ちかてつ|metrô|Lugares
+バス|ばす|ônibus|Lugares
+車|くるま|carro|Lugares
+自転車|じてんしゃ|bicicleta|Lugares
+道|みち|caminho / rua|Lugares
+信号|しんごう|semáforo|Lugares
+交差点|こうさてん|cruzamento|Lugares
+橋|はし|ponte|Lugares
+空港|くうこう|aeroporto|Lugares
+飛行機|ひこうき|avião|Lugares
+ホテル|ほてる|hotel|Lugares
+病院|びょういん|hospital|Lugares
+薬局|やっきょく|farmácia|Lugares
+公園|こうえん|parque|Lugares
+銀行|ぎんこう|banco|Lugares
+郵便局|ゆうびんきょく|correio|Lugares
+役所|やくしょ|prefeitura / repartição|Lugares
+図書館|としょかん|biblioteca|Lugares
+映画館|えいがかん|cinema|Lugares
+食堂|しょくどう|refeitório|Lugares
+喫茶店|きっさてん|cafeteria|Lugares
+コンビニ|こんびに|loja de conveniência|Lugares
+スーパー|すーぱー|supermercado|Lugares
+市場|いちば|mercado|Lugares
+レストラン|れすとらん|restaurante|Lugares
+台所|だいどころ|cozinha|Lugares
+台|だい|base / bancada|Lugares
+席|せき|assento|Lugares
+場所|ばしょ|lugar|Lugares
+近所|きんじょ|vizinhança|Lugares
+町|まち|cidade / bairro|Lugares
+都会|とかい|cidade grande|Lugares
+田舎|いなか|interior / zona rural|Lugares
+国|くに|país|Lugares
+海外|かいがい|exterior|Lugares
+日本|にほん|Japão|Lugares
+ブラジル|ぶらじる|Brasil|Lugares
+世界|せかい|mundo|Lugares
+地図|ちず|mapa|Lugares
+住所|じゅうしょ|endereço|Lugares
+番号|ばんごう|número|Lugares
+出口|でぐち|saída|Lugares
+入口|いりぐち|entrada|Lugares
+水|みず|água|Comida
+お湯|おゆ|água quente|Comida
+氷|こおり|gelo|Comida
+お茶|おちゃ|chá|Comida
+紅茶|こうちゃ|chá preto|Comida
+コーヒー|こーひー|café|Comida
+牛乳|ぎゅうにゅう|leite|Comida
+ジュース|じゅーす|suco|Comida
+酒|さけ|álcool / saquê|Comida
+ビール|びーる|cerveja|Comida
+ご飯|ごはん|arroz / refeição|Comida
+朝ご飯|あさごはん|café da manhã|Comida
+昼ご飯|ひるごはん|almoço|Comida
+晩ご飯|ばんごはん|jantar|Comida
+パン|ぱん|pão|Comida
+卵|たまご|ovo|Comida
+肉|にく|carne|Comida
+魚|さかな|peixe|Comida
+野菜|やさい|verdura / legume|Comida
+果物|くだもの|fruta|Comida
+米|こめ|arroz cru|Comida
+麺|めん|macarrão|Comida
+うどん|うどん|udon|Comida
+そば|そば|soba|Comida
+ラーメン|らーめん|rámen|Comida
+寿司|すし|sushi|Comida
+味噌汁|みそしる|sopa de missô|Comida
+スープ|すーぷ|sopa|Comida
+サラダ|さらだ|salada|Comida
+弁当|べんとう|bentô|Comida
+お菓子|おかし|doce / snack|Comida
+飴|あめ|bala|Comida
+塩|しお|sal|Comida
+砂糖|さとう|açúcar|Comida
+醤油|しょうゆ|shoyu|Comida
+ソース|そーす|molho|Comida
+味|あじ|sabor|Comida
+匂い|におい|cheiro|Comida
+腹|はら|barriga|Comida
+お腹|おなか|barriga|Comida
+喉|のど|garganta|Comida
+腹減る|はらへる|ficar com fome|Comida
+お腹いっぱい|おなかいっぱい|estar cheio|Comida
+注文|ちゅうもん|pedido|Comida
+会計|かいけい|conta / pagamento|Comida
+おかわり|おかわり|repetição|Comida
+量|りょう|quantidade|Comida
+材料|ざいりょう|ingrediente|Comida
+冷凍|れいとう|congelado|Comida
+生|なま|cru / fresco|Comida
+体|からだ|corpo|Corpo
+頭|あたま|cabeça|Corpo
+顔|かお|rosto|Corpo
+目|め|olho|Corpo
+耳|みみ|orelha|Corpo
+鼻|はな|nariz|Corpo
+口|くち|boca|Corpo
+歯|は|dente|Corpo
+舌|した|língua|Corpo
+首|くび|pescoço|Corpo
+肩|かた|ombro|Corpo
+腕|うで|braço|Corpo
+手|て|mão|Corpo
+指|ゆび|dedo|Corpo
+爪|つめ|unha|Corpo
+胸|むね|peito|Corpo
+背中|せなか|costas|Corpo
+腰|こし|lombar / cintura|Corpo
+足|あし|perna / pé|Corpo
+膝|ひざ|joelho|Corpo
+心|こころ|coração / mente|Corpo
+気分|きぶん|humor / sensação|Corpo
+病気|びょうき|doença|Corpo
+熱|ねつ|febre|Corpo
+風邪|かぜ|resfriado|Corpo
+咳|せき|tosse|Corpo
+鼻水|はなみず|coriza|Corpo
+怪我|けが|machucado|Corpo
+薬|くすり|remédio|Corpo
+注射|ちゅうしゃ|injeção|Corpo
+診察|しんさつ|consulta|Corpo
+手術|しゅじゅつ|cirurgia|Corpo
+健康|けんこう|saúde|Corpo
+運動|うんどう|exercício|Corpo
+散歩|さんぽ|caminhada|Corpo
+疲れ|つかれ|cansaço|Corpo
+ストレス|すとれす|estresse|Corpo
+緊張|きんちょう|tensão|Corpo
+安心|あんしん|alívio / tranquilidade|Corpo
+不安|ふあん|ansiedade|Corpo
+心配|しんぱい|preocupação|Corpo
+我慢|がまん|aguentar / autocontrole|Corpo
+痛み|いたみ|dor|Corpo
+汗|あせ|suor|Corpo
+涙|なみだ|lágrima|Corpo
+声|こえ|voz|Corpo
+音|おと|som|Corpo
+力|ちから|força|Corpo
+呼吸|こきゅう|respiração|Corpo
+体調|たいちょう|condição física|Corpo
+仕事|しごと|trabalho|Estudo/Trabalho
+作業|さぎょう|tarefa / operação|Estudo/Trabalho
+会議|かいぎ|reunião|Estudo/Trabalho
+連絡|れんらく|contato / aviso|Estudo/Trabalho
+報告|ほうこく|relatório|Estudo/Trabalho
+相談|そうだん|consulta / conversa|Estudo/Trabalho
+確認|かくにん|confirmação|Estudo/Trabalho
+説明|せつめい|explicação|Estudo/Trabalho
+案内|あんない|orientação / guia|Estudo/Trabalho
+準備|じゅんび|preparo|Estudo/Trabalho
+練習|れんしゅう|prática|Estudo/Trabalho
+宿題|しゅくだい|lição de casa|Estudo/Trabalho
+課題|かだい|tarefa / desafio|Estudo/Trabalho
+授業|じゅぎょう|aula|Estudo/Trabalho
+試験|しけん|prova|Estudo/Trabalho
+テスト|てすと|teste|Estudo/Trabalho
+点数|てんすう|pontuação|Estudo/Trabalho
+成績|せいせき|nota / desempenho|Estudo/Trabalho
+答え|こたえ|resposta|Estudo/Trabalho
+質問|しつもん|pergunta|Estudo/Trabalho
+問題|もんだい|problema / questão|Estudo/Trabalho
+答える|こたえる|responder|Estudo/Trabalho
+調べる|しらべる|pesquisar / verificar|Estudo/Trabalho
+探す|さがす|procurar|Estudo/Trabalho
+見つける|みつける|encontrar|Estudo/Trabalho
+提出|ていしゅつ|entrega|Estudo/Trabalho
+締め切る|しめきる|fechar prazo|Estudo/Trabalho
+参加|さんか|participação|Estudo/Trabalho
+欠席|けっせき|falta|Estudo/Trabalho
+出席|しゅっせき|presença|Estudo/Trabalho
+経験|けいけん|experiência|Estudo/Trabalho
+失敗|しっぱい|fracasso / erro|Estudo/Trabalho
+成功|せいこう|sucesso|Estudo/Trabalho
+努力|どりょく|esforço|Estudo/Trabalho
+集中|しゅうちゅう|concentração|Estudo/Trabalho
+注意|ちゅうい|atenção / cuidado|Estudo/Trabalho
+安全|あんぜん|segurança|Estudo/Trabalho
+危険|きけん|perigo|Estudo/Trabalho
+情報|じょうほう|informação|Estudo/Trabalho
+内容|ないよう|conteúdo|Estudo/Trabalho
+意味|いみ|significado|Estudo/Trabalho
+方法|ほうほう|método|Estudo/Trabalho
+こう|こう|assim (deste jeito)|Básico
+結果|けっか|resultado|Estudo/Trabalho
+そう|そう|assim (desse jeito)|Básico
+理由書|りゆうしょ|justificativa|Estudo/Trabalho
+連休|れんきゅう|feriado prolongado|Estudo/Trabalho
+予約|よやく|reserva|Estudo/Trabalho
+予定表|よていひょう|cronograma|Estudo/Trabalho
+資料|しりょう|material / documento|Estudo/Trabalho
+電話|でんわ|telefone|Mídia/Tecnologia
+スマホ|すまほ|smartphone|Mídia/Tecnologia
+携帯電話|けいたいでんわ|telefone celular|Mídia/Tecnologia
+メッセージ|めっせーじ|mensagem|Mídia/Tecnologia
+メール|めーる|e-mail|Mídia/Tecnologia
+写真|しゃしん|foto|Mídia/Tecnologia
+動画|どうが|vídeo|Mídia/Tecnologia
+音楽|おんがく|música|Mídia/Tecnologia
+歌|うた|música / canção|Mídia/Tecnologia
+映画|えいが|filme|Mídia/Tecnologia
+ドラマ|どらま|drama / série|Mídia/Tecnologia
+アニメ|あにめ|anime|Mídia/Tecnologia
+ゲーム|げーむ|jogo|Mídia/Tecnologia
+本|ほん|livro|Mídia/Tecnologia
+漫画|まんが|mangá|Mídia/Tecnologia
+ニュース|にゅーす|notícia|Mídia/Tecnologia
+記事|きじ|artigo|Mídia/Tecnologia
+画面|がめん|tela|Mídia/Tecnologia
+ボタン|ぼたん|botão|Mídia/Tecnologia
+アプリ|あぷり|aplicativo|Mídia/Tecnologia
+サイト|さいと|site|Mídia/Tecnologia
+ページ|ぺーじ|página|Mídia/Tecnologia
+アカウント|あかうんと|conta|Mídia/Tecnologia
+パスワード|ぱすわーど|senha|Mídia/Tecnologia
+名前|なまえ|nome|Mídia/Tecnologia
+文字|もじ|caractere / letra|Mídia/Tecnologia
+漢字|かんじ|kanji|Mídia/Tecnologia
+ひらがな|ひらがな|hiragana|Mídia/Tecnologia
+カタカナ|かたかな|katakana|Mídia/Tecnologia
+翻訳|ほんやく|tradução|Mídia/Tecnologia
+発音|はつおん|pronúncia|Mídia/Tecnologia
+会話|かいわ|conversa|Mídia/Tecnologia
+文|ぶん|frase / texto|Mídia/Tecnologia
+単語|たんご|palavra|Mídia/Tecnologia
+表現|ひょうげん|expressão|Mídia/Tecnologia
+意味合い|いみあい|nuance|Mídia/Tecnologia
+録音|ろくおん|gravação|Mídia/Tecnologia
+保存|ほぞん|salvar|Mídia/Tecnologia
+削除|さくじょ|apagar|Mídia/Tecnologia
+追加|ついか|adicionar|Mídia/Tecnologia
+変更|へんこう|alteração|Mídia/Tecnologia
+更新|こうしん|atualização|Mídia/Tecnologia
+接続|せつぞく|conexão|Mídia/Tecnologia
+通信|つうしん|comunicação|Mídia/Tecnologia
+電源|でんげん|energia / botão de ligar|Mídia/Tecnologia
+充電|じゅうでん|carga de bateria|Mídia/Tecnologia
+検索|けんさく|pesquisa|Mídia/Tecnologia
+共有|きょうゆう|compartilhar|Mídia/Tecnologia
+通知|つうち|notificação|Mídia/Tecnologia
+設定|せってい|configuração|Mídia/Tecnologia
+天気|てんき|tempo / clima|Natureza/Clima
+晴れ|はれ|sol|Natureza/Clima
+曇り|くもり|nublado|Natureza/Clima
+雨|あめ|chuva|Natureza/Clima
+雪|ゆき|neve|Natureza/Clima
+風|かぜ|vento|Natureza/Clima
+台風|たいふう|tufão|Natureza/Clima
+空|そら|céu|Natureza/Clima
+雲|くも|nuvem|Natureza/Clima
+太陽|たいよう|sol|Natureza/Clima
+ああ|ああ|assim (daquele jeito)|Básico
+星|ほし|estrela|Natureza/Clima
+海|うみ|mar|Natureza/Clima
+川|かわ|rio|Natureza/Clima
+山|やま|montanha|Natureza/Clima
+森|もり|floresta|Natureza/Clima
+花|はな|flor|Natureza/Clima
+木|き|árvore|Natureza/Clima
+草|くさ|grama / capim|Natureza/Clima
+土|つち|terra / solo|Natureza/Clima
+季節|きせつ|estação do ano|Natureza/Clima
+春|はる|primavera|Natureza/Clima
+夏|なつ|verão|Natureza/Clima
+秋|あき|outono|Natureza/Clima
+冬|ふゆ|inverno|Natureza/Clima
+自然|しぜん|natureza|Natureza/Clima
+色|いろ|cor|Natureza/Clima
+赤|あか|vermelho|Natureza/Clima
+青|あお|azul|Natureza/Clima
+白|しろ|branco|Natureza/Clima
+黒|くろ|preto|Natureza/Clima
+黄色|きいろ|amarelo|Natureza/Clima
+緑|みどり|verde|Natureza/Clima
+茶色|ちゃいろ|marrom|Natureza/Clima
+服装|ふくそう|roupa / vestuário|Natureza/Clima
+上着|うわぎ|casaco|Natureza/Clima
+コート|こーと|casaco|Natureza/Clima
+シャツ|しゃつ|camisa|Natureza/Clima
+ズボン|ずぼん|calça|Natureza/Clima
+スカート|すかーと|saia|Natureza/Clima
+帽子|ぼうし|chapéu / boné|Natureza/Clima
+手袋|てぶくろ|luva|Natureza/Clima
+指輪|ゆびわ|anel|Natureza/Clima
+髪|かみ|cabelo|Natureza/Clima
+顔色|かおいろ|aparência / cor do rosto|Natureza/Clima
+景色|けしき|paisagem|Natureza/Clima
+別に|べつに|não particularmente|Básico
+光|ひかり|luz|Natureza/Clima
+音声|おんせい|áudio / voz|Natureza/Clima
+気温|きおん|temperatura|Natureza/Clima
+気持ち|きもち|sentimento|Vida/Frequente
+気|き|energia / espírito|Vida/Frequente
+感じ|かんじ|sensação / impressão|Vida/Frequente
+感じる|かんじる|sentir|Vida/Frequente
+考え|かんがえ|ideia|Vida/Frequente
+意見|いけん|opinião|Vida/Frequente
+希望|きぼう|esperança / desejo|Vida/Frequente
+夢|ゆめ|sonho|Vida/Frequente
+目的|もくてき|objetivo|Vida/Frequente
+目標|もくひょう|meta|Vida/Frequente
+計画|けいかく|plano|Vida/Frequente
+決定|けってい|decisão|Vida/Frequente
+選択|せんたく|escolha|Vida/Frequente
+可能性|かのうせい|possibilidade|Vida/Frequente
+機会|きかい|oportunidade|Vida/Frequente
+原因|げんいん|causa|Vida/Frequente
+変化|へんか|mudança|Vida/Frequente
+成長|せいちょう|crescimento|Vida/Frequente
+生活|せいかつ|vida cotidiana|Vida/Frequente
+習慣|しゅうかん|hábito|Vida/Frequente
+趣味|しゅみ|hobby|Vida/Frequente
+遊び|あそび|brincadeira / lazer|Vida/Frequente
+旅行|りょこう|viagem|Vida/Frequente
+思い出|おもいで|memória / lembrança|Vida/Frequente
+人気|にんき|popularidade|Vida/Frequente
+調子|ちょうし|condição / ritmo|Vida/Frequente
+雰囲気|ふんいき|clima / atmosfera|Vida/Frequente
+魅力|みりょく|charme|Vida/Frequente
+価値|かち|valor|Vida/Frequente
+値段|ねだん|preço|Vida/Frequente
+料金|りょうきん|tarifa / taxa|Vida/Frequente
+お金|おかね|dinheiro|Vida/Frequente
+小銭|こぜに|moedas|Vida/Frequente
+千円|せんえん|mil ienes|Vida/Frequente
+万円|まんえん|dez mil ienes|Vida/Frequente
+無料|むりょう|grátis|Vida/Frequente
+有料|ゆうりょう|pago|Vida/Frequente
+注文する|ちゅうもんする|fazer pedido|Vida/Frequente
+予約する|よやくする|reservar|Vida/Frequente
+連絡する|れんらくする|entrar em contato|Vida/Frequente
+相談する|そうだんする|consultar / conversar|Vida/Frequente
+確認する|かくにんする|confirmar|Vida/Frequente
+説明する|せつめいする|explicar|Vida/Frequente
+案内する|あんないする|guiar / orientar|Vida/Frequente
+紹介する|しょうかいする|apresentar|Vida/Frequente
+楽しむ|たのしむ|aproveitar / curtir|Vida/Frequente
+笑う|わらう|rir|Vida/Frequente
+泣く|なく|chorar|Vida/Frequente
+怒る|おこる|ficar bravo|Vida/Frequente
+喜ぶ|よろこぶ|se alegrar|Vida/Frequente
+開く|ひらく|abrir|Verbo
+閉じる|とじる|fechar|Verbo
+消す|けす|apagar / desligar|Verbo
+消える|きえる|sumir / apagar|Verbo
+つける|つける|ligar / anexar|Verbo
+付ける|つける|colocar / anexar|Verbo
+試す|ためす|testar|Verbo
+続く|つづく|continuar|Verbo
+戻る|もどる|voltar|Verbo
+戻す|もどす|devolver / reverter|Verbo
+上がる|あがる|subir|Verbo
+下がる|さがる|descer|Verbo
+増える|ふえる|aumentar|Verbo
+減る|へる|diminuir|Verbo
+始まる|はじまる|começar|Verbo
+終える|おえる|finalizar|Verbo
+見える|みえる|ser visível|Verbo
+聞こえる|きこえる|ser audível|Verbo
+伝える|つたえる|transmitir / contar|Verbo
+伝わる|つたわる|ser transmitido|Verbo
+慣れる|なれる|acostumar-se|Verbo
+慣らす|ならす|acostumar|Verbo
+集める|あつめる|juntar / colecionar|Verbo
+集まる|あつまる|reunir-se|Verbo
+残る|のこる|restar|Verbo
+残す|のこす|deixar sobrar|Verbo
+決まる|きまる|ser decidido|Verbo
+似る|にる|parecer-se|Verbo
+似合う|にあう|cair bem / combinar|Verbo
+足りる|たりる|ser suficiente|Verbo
+足す|たす|somar / acrescentar|Verbo
+選べる|えらべる|poder escolher|Verbo
+支える|ささえる|apoiar|Verbo
+守る|まもる|proteger / cumprir|Verbo
+破る|やぶる|rasgar / quebrar regra|Verbo
+間違える|まちがえる|errar|Verbo
+流す|ながす|deixar correr / enxaguar|Verbo
+まあ|まあ|bem / enfim|Básico
+ほら|ほら|olha / tá vendo|Básico`;
+
+const structureRaw = `〜てる|ação em andamento / estado atual|Forma falada de 〜ている. É a estrutura mais vital da fala cotidiana.|今、何してる？|O que você está fazendo agora?
+〜てた|estado / ação passada contínua|Forma falada de 〜ていた. Muito usada para lembrar, comentar e narrar.|さっき寝てた。|Eu estava dormindo agora há pouco.
+〜たい|querer fazer|Gruda na base do verbo para falar desejo pessoal.|早く帰りたい。|Quero voltar logo para casa.
+〜たくない|não querer fazer|Negativa de 〜たい, super comum na fala.|今日は外に出たくない。|Hoje não quero sair.
+〜と思う|acho que / penso que|Usado para opinião direta e neutra.|それはいいと思う。|Acho que isso é bom.
+〜って思う|acho que|Versão mais falada de 〜と思う.|無理だって思う。|Acho que é impossível.
+〜んだ|é que / acontece que|Explica, dá contexto, suaviza ou reforça.|今日は休みなんだ。|É que hoje é folga.
+〜んだけど|é que... / mas...|Abre assunto, pede reação, introduz problema.|ちょっと相談があるんだけど。|Queria falar uma coisa contigo.
+〜から|porque|Motivo direto, muito falado.|今日は忙しいから、無理。|Hoje estou ocupado, então não dá.
+〜けど|mas / só que|Conecta ideia e deixa a frase mais natural.|行きたいけど、お金がない。|Quero ir, mas não tenho dinheiro.
+〜し|e além disso / porque também|Empilha motivos de forma natural.|安いし、うまいし、ここ好き。|É barato, gostoso e eu gosto daqui.
+〜てもいい|pode / tudo bem fazer|Pedir ou dar permissão.|ここに座ってもいい？|Posso sentar aqui?
+〜なくてもいい|não precisa fazer|Muito útil no dia a dia.|今日は来なくてもいいよ。|Hoje você não precisa vir.
+〜なきゃ|tenho que|Forma bem falada de 〜なければならない.|もう寝なきゃ。|Já tenho que dormir.
+〜ないと|tenho que / se não|Outra forma falada de obrigação.|早く行かないと。|Tenho que ir logo.
+〜ちゃう|acabar fazendo / fazer sem querer|Contração falada de 〜てしまう.|また忘れちゃった。|Acabei esquecendo de novo.
+〜とく|fazer antes / deixar pronto|Contração falada de 〜ておく.|先に言っとくね。|Vou te falar antes, tá?
+〜てみる|tentar fazer|Serve para tentativa / teste.|一回食べてみる。|Vou provar uma vez.
+〜てくれる|fazer para mim|Quando alguém faz algo por você.|手伝ってくれてありがとう。|Obrigado por me ajudar.
+〜てもらう|receber favor|Quando você recebe a ação de alguém.|友達に教えてもらった。|Meu amigo me ensinou.
+〜てあげる|fazer para alguém|Quando você faz algo por outra pessoa.|あとで送ってあげる。|Depois eu mando para você.
+〜てほしい|quero que faça|Pedido / desejo em relação ao outro.|ちゃんと見てほしい。|Quero que você veja direito.
+〜ことがある|já aconteceu / às vezes|Experiência ou ocorrência eventual.|日本に行ったことがある。|Já fui ao Japão.
+〜たことがある|já fez alguma vez|Forma clássica de experiência.|寿司を作ったことがある。|Já fiz sushi uma vez.
+〜ようになる|passar a conseguir / começar a|Mudança de hábito ou capacidade.|日本語が少し話せるようになった。|Passei a conseguir falar um pouco de japonês.
+〜ようにする|procurar fazer / tentar manter|Hábito intencional.|毎日読むようにしてる。|Tento ler todos os dias.
+〜たら|se / quando|Condição muito natural na fala.|終わったら連絡して。|Quando terminar, me avisa.
+〜なら|se for / quanto a|Usado para tema ou condição baseada no contexto.|行かないなら、先に言って。|Se não for, fala antes.
+〜ば|se|Condição um pouco mais lógica, mas falada também.|安ければ買う。|Se estiver barato, compro.
+〜かも|talvez|Hedge muito comum.|明日は雨かも。|Talvez amanhã chova.
+〜かな|será? / acho que|Fala consigo mesmo ou dúvida leve.|もう帰ったかな。|Será que ele já voltou?
+〜だろう|deve / acho que|Suposição mais firme.|たぶん大丈夫だろう。|Deve estar tudo bem.
+〜みたい|parece / tipo|Super comum para comparação e impressão.|彼、先生みたい。|Ele parece professor.
+〜っぽい|com cara de / meio|Nuance casual e falada.|子供っぽいね。|Tá meio infantil.
+〜そう|parece que vai / parece|Impressão visual imediata.|おいしそう。|Parece gostoso.
+〜らしい|parece que / típico de|Rumor ou característica típica.|彼は来ないらしい。|Parece que ele não vem.
+〜すぎる|demais|Excesso, muito usado.|高すぎる。|Está caro demais.
+〜やすい|fácil de|Avalia facilidade.|この靴は歩きやすい。|Esse sapato é fácil de andar.
+〜にくい|difícil de|Oposto de やすい.|この字、読みにくい。|Esse caractere é difícil de ler.
+〜だけ|só / apenas|Limitação neutra.|一つだけ聞きたい。|Só quero perguntar uma coisa.
+〜しか〜ない|só / nada além de|Limitação forte com negativa.|千円しかない。|Só tenho mil ienes.
+〜でも|até / mesmo / ou então|Super flexível na fala.|お茶でも飲む？|Quer tomar um chá ou algo assim?
+〜とか|tipo / coisas como|Lista incompleta, fala natural.|週末は映画とか見る。|No fim de semana vejo filme e coisas assim.
+〜って|que / chamado / sobre|Marcador falado mega frequente.|田中さんって知ってる？|Você conhece o Tanaka?
+〜っていう|chamado / que se diz|Explica nome ou conceito.|推しっていう言葉、知ってる？|Você conhece a palavra oshi?
+〜じゃん|ué / tá na cara / né|Bem coloquial, especialmente Kanto.|いいじゃん、それ。|Isso tá legal, pô.
+〜でしょ|né / não é?|Busca concordância.|これ、難しいでしょ。|Isso é difícil, né?
+〜じゃない|não é / não|Negação ou confirmação informal.|違うじゃない。|Não é isso.
+〜わけじゃない|não é que...|Negação parcial, nuance importante.|嫌いなわけじゃない。|Não é que eu não goste.
+〜まま|do jeito que está|Estado mantido.|そのままでいいよ。|Pode deixar assim mesmo.
+〜ながら|fazendo enquanto|Muito útil para rotina.|音楽を聞きながら勉強する。|Estudo ouvindo música.
+〜ばかり|só fica / acabou de|Na fala aparece muito para exagero e repetição.|彼は文句ばかり言う。|Ele só reclama.
+〜ところ|bem na hora / prestes a|Momento exato da ação.|今から出るところ。|Estou bem saindo agora.
+〜中|no meio de|Estado em progresso.|今、仕事中。|Estou trabalhando agora.
+〜てない|não está / não fez|Negativa falada de 〜ていない.|まだ食べてない。|Ainda não comi.
+〜なくて|e não / por não|Liga motivo e negativa.|時間がなくて行けない。|Não consigo ir porque não tenho tempo.
+〜ように|para que / de modo que|Objetivo ou resultado.|忘れないようにメモした。|Anotei para não esquecer.
+〜ことにする|decidir fazer|Decisão pessoal.|今日は休むことにする。|Decidi descansar hoje.
+〜ことになる|ficar decidido / acabar ficando|Decisão externa ou resultado.|来週行くことになった。|Ficou decidido que vamos semana que vem.
+〜しかない|não tem outro jeito|Muito natural na fala.|やるしかない。|Não tem outro jeito, tem que fazer.
+〜っけ|como era mesmo?|Para lembrar algo informalmente.|あれ、何時だっけ？|Ué, que horas era mesmo?`;
+
+const categoryOrder = [
+  "Básico",
+  "Verbo",
+  "Adjetivo",
+  "Adjetivo/Adv",
+  "Pessoas",
+  "Tempo",
+  "Casa",
+  "Lugares",
+  "Comida",
+  "Corpo",
+  "Estudo/Trabalho",
+  "Mídia/Tecnologia",
+  "Natureza/Clima",
+  "Vida/Frequente",
+];
+
+const topPatterns = [
+  "〜てる",
+  "〜てた",
+  "〜たい",
+  "〜と思う",
+  "〜って思う",
+  "〜んだ",
+  "〜んだけど",
+  "〜から",
+  "〜けど",
+  "〜し",
+  "〜なきゃ",
+  "〜ないと",
+  "〜ちゃう",
+  "〜とく",
+  "〜たら",
+  "〜なら",
+  "〜かも",
+  "〜みたい",
+];
+
+function Chip({ active, children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-full border px-3 py-1.5 text-sm transition ${
+        active
+          ? "border-black bg-black text-white"
+          : "border-zinc-300 bg-white text-zinc-700 hover:border-zinc-400"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function StatCard({ label, value, sub }) {
+  return (
+    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="text-2xl font-bold text-zinc-900">{value}</div>
+      <div className="mt-1 text-sm font-medium text-zinc-700">{label}</div>
+      <div className="mt-1 text-xs text-zinc-500">{sub}</div>
+    </div>
+  );
+}
+
+function SectionTitle({ title, desc }) {
+  return (
+    <div className="mb-5">
+      <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{title}</h2>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600">{desc}</p>
+    </div>
+  );
+}
+
+export default function HithubIndexJapaneseSpeakingSite() {
+  const [tab, setTab] = useState("vocab");
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("Todos");
+
+  const categories = useMemo(() => ["Todos", ...categoryOrder], []);
+
+  const filteredVocab = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return vocab.filter((item) => {
+      const matchesCategory = category === "Todos" || item.category === category;
+      const matchesSearch =
+        !q ||
+        item.word.toLowerCase().includes(q) ||
+        item.reading.toLowerCase().includes(q) ||
+        item.pt.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+  }, [search, category]);
+
+  const filteredStructures = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return structures.filter((item) => {
+      return (
+        !q ||
+        item.pattern.toLowerCase().includes(q) ||
+        item.meaning.toLowerCase().includes(q) ||
+        item.use.toLowerCase().includes(q) ||
+        item.example.toLowerCase().includes(q) ||
+        item.translation.toLowerCase().includes(q)
+      );
+    });
+  }, [search]);
+
+  const visibleTopPatterns = useMemo(() => {
+    const set = new Set(topPatterns);
+    return structures.filter((item) => set.has(item.pattern));
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <header className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <div className="mb-3 inline-flex rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-600">
+                Hithub Index
+              </div>
+              <h1 className="text-3xl font-bold tracking-tight text-zinc-950 sm:text-5xl">
+                Japonês falado de verdade
+              </h1>
+              <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
+                Índice enxuto e direto com <strong>800 vocábulos úteis da fala cotidiana</strong> e{" "}
+                <strong>61 estruturas realmente faladas</strong>. Se a palavra costuma aparecer com kanji,
+                ela aparece com <strong>kanji + leitura</strong>. Sem encher de termo raro.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 lg:w-[360px]">
+              <StatCard label="Vocábulos" value="800" sub="núcleo útil para conversa" />
+              <StatCard label="Estruturas" value="61" sub="formas naturais da fala" />
+              <StatCard label="Categorias" value="14" sub="organizadas por uso real" />
+              <StatCard label="Foco" value="Falado" sub="prioridade para linguagem natural" />
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-3 lg:grid-cols-[1fr_auto_auto]">
+            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Busca</div>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Busque por japonês, leitura, português ou estrutura..."
+                className="mt-2 w-full bg-transparent text-sm outline-none placeholder:text-zinc-400"
+              />
+            </div>
+
+            <button
+              onClick={() => setTab("vocab")}
+              className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                tab === "vocab"
+                  ? "bg-zinc-900 text-white"
+                  : "border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300"
+              }`}
+            >
+              Vocabulário
+            </button>
+
+            <button
+              onClick={() => setTab("structures")}
+              className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                tab === "structures"
+                  ? "bg-zinc-900 text-white"
+                  : "border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300"
+              }`}
+            >
+              Estruturas faladas
+            </button>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+            <strong>Critério do índice:</strong> palavras e padrões com alta utilidade na fala cotidiana,
+            conversa casual, rotina, trabalho, estudo, internet, cidade e relações humanas. A ideia é
+            cobrir o que você realmente encontra e usa, não lotar com coisa rara.
+          </div>
+        </header>
+
+        {tab === "vocab" ? (
+          <main className="mt-8">
+            <SectionTitle
+              title="Vocabulário essencial da fala"
+              desc="Você pode filtrar por categoria e buscar em japonês, leitura ou tradução. A lista mantém forma falada e uso real como prioridade."
+            />
+
+            <div className="mb-6 flex flex-wrap gap-2">
+              {categories.map((item) => (
+                <Chip key={item} active={category === item} onClick={() => setCategory(item)}>
+                  {item}
+                </Chip>
+              ))}
+            </div>
+
+            <div className="mb-5 flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-600">
+              <span>
+                Exibindo <strong className="text-zinc-900">{filteredVocab.length}</strong> itens
+                {category !== "Todos" ? (
+                  <>
+                    {" "}
+                    em <strong className="text-zinc-900">{category}</strong>
+                  </>
+                ) : null}
+                .
+              </span>
+              <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                kanji + leitura + pt-br
+              </span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {filteredVocab.map((item) => (
+                <article
+                  key={item.id}
+                  className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-2xl font-bold leading-none text-zinc-950">{item.word}</div>
+                      <div className="mt-2 text-sm text-zinc-500">{item.reading}</div>
+                    </div>
+                    <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
+                      {item.category}
+                    </span>
+                  </div>
+                  <div className="mt-4 text-base font-medium text-zinc-800">{item.pt}</div>
+                  <div className="mt-3 text-xs uppercase tracking-[0.16em] text-zinc-400">
+                    #{String(item.id).padStart(3, "0")}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </main>
+        ) : (
+          <main className="mt-8">
+            <SectionTitle
+              title="Estruturas que realmente aparecem na fala"
+              desc="Aqui estão as formas que seguram a conversa do japonês falado. Cada bloco mostra sentido principal, como usar e um exemplo curto e natural."
+            />
+
+            <div className="mb-8 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-bold text-zinc-900">Núcleo vital da fala</h3>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    Se você automatizar estas, sua compreensão e sua produção sobem muito.
+                  </p>
+                </div>
+                <div className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-600">
+                  18 padrões-chave
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {visibleTopPatterns.map((item) => (
+                  <span
+                    key={item.id}
+                    className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-sm text-zinc-700"
+                  >
+                    <strong className="text-zinc-950">{item.pattern}</strong>
+                    <span className="ml-2 text-zinc-500">{item.meaning}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-5 flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-600">
+              <span>
+                Exibindo <strong className="text-zinc-900">{filteredStructures.length}</strong> estruturas.
+              </span>
+              <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                padrão + uso + exemplo
+              </span>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {filteredStructures.map((item) => (
+                <article key={item.id} className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-2xl font-bold text-zinc-950">{item.pattern}</div>
+                      <div className="mt-2 text-sm font-medium text-zinc-700">{item.meaning}</div>
+                    </div>
+                    <div className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600">
+                      Falado
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-zinc-50 p-4">
+                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                      Como usar
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-zinc-700">{item.use}</p>
+                  </div>
+
+                  <div className="mt-4 space-y-2">
+                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                      Exemplo
+                    </div>
+                    <div className="text-lg font-semibold text-zinc-900">{item.example}</div>
+                    <div className="text-sm text-zinc-600">{item.translation}</div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </main>
+        )}
+
+        <footer className="mt-10 rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-bold text-zinc-900">Como estudar com este índice</h3>
+          <div className="mt-3 grid gap-3 text-sm leading-6 text-zinc-600 md:grid-cols-3">
+            <div className="rounded-2xl bg-zinc-50 p-4">
+              <strong className="text-zinc-900">1. Pegue por bloco</strong>
+              <p className="mt-1">Escolha uma categoria e memorize 15–20 palavras que você realmente falaria hoje.</p>
+            </div>
+            <div className="rounded-2xl bg-zinc-50 p-4">
+              <strong className="text-zinc-900">2. Cole com estrutura</strong>
+              <p className="mt-1">Não estude palavra solta para sempre. Junte verbo + partícula + padrão falado.</p>
+            </div>
+            <div className="rounded-2xl bg-zinc-50 p-4">
+              <strong className="text-zinc-900">3. Repita em voz alta</strong>
+              <p className="mt-1">A meta é automatizar fala e escuta. Leia e responda como se estivesse conversando.</p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
